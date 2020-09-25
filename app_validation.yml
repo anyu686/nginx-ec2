@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: False 
+  tasks:
+    - name: validate if Nginx is running in the server 
+      uri: 
+          url: http://{{ hostvars.instance.ansible_host }}
+          return_content: yes 
+      register: this
+    - name: strip html tags and count words  
+      shell:
+        tmp=$'{{this.content}}' && echo $tmp | awk '{gsub("body[^]]*}", "")}1' | awk '{gsub("<[^>]*>", "")}1'
+      register: result
+    - name: show stripped  result
+      debug: 
+        msg: 
+          - "The stripped result is"
+          -  "{{result.stdout}}"
+    - name: count the words in result 
+      shell:
+        echo '{{result.stdout}}' | wc -w
+      register: length
+    - name: length 
+      debug:  
+         msg='There are {{length.stdout}} words in the html'
+    - name: sort the words 
+      shell:
+        echo '{{result.stdout}}' | xargs -n 1|sort -f|xargs
+      register: sorted_word 
+    - name: show sorted_result 
+      debug: 
+        msg:
+          - 'The alphabet sorted results is:'
+          - '{{sorted_word.stdout}}'

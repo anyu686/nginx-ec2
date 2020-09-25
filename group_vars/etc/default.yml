@@ -1,0 +1,11 @@
+---
+region: eu-west-2
+image: ami-05c424d59413a2876 # https://cloud-images.ubuntu.com/locator/ec2/
+id: "nginix-app-server"
+sec_group: "nginix-app-server"
+key_name: my_aws
+key_path: ~/.ssh/my_aws_1.pub
+create_containers: 1 
+default_container_name: nginx-docker
+default_container_image: nginx
+
